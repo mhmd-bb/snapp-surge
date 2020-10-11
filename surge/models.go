@@ -1,12 +1,14 @@
 package surge
 
 import (
-    "github.com/mhmd-bb/snapp-surge/config"
     "gorm.io/gorm"
     "time"
 )
 
 type Bucket struct {
+
+    BucketLength    uint64    `gorm:"-"`
+
 	gorm.Model
 
 	ExpDate     time.Time
@@ -19,7 +21,7 @@ type Bucket struct {
 
 // set the expiration time on save of Bucket
 func (b *Bucket) BeforeSave(tx *gorm.DB) (err error) {
-    b.ExpDate = time.Now().Add(time.Second * time.Duration(config.BucketLength))
+    b.ExpDate = time.Now().Add(time.Second * time.Duration(b.BucketLength))
     return
 }
 

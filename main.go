@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mhmd-bb/snapp-surge/config"
+	"github.com/mhmd-bb/snapp-surge/database"
 	"github.com/mhmd-bb/snapp-surge/surge"
 	"gorm.io/gorm"
 )
@@ -16,10 +17,16 @@ func Migrate(db *gorm.DB) {
 
 func main() {
 
-	// initialize config
-	config.Init()
+	// initialize config constants
+	config.InitConstants()
 
-	db:=config.GetDB()
+	// connect to database
+	db := database.InitDB(config.Consts.PostgresUser, config.Consts.PostgresPass, config.Consts.PostgresDB)
+
+	// migrate all models
 	Migrate(db)
+
+
+	db.Create(&surge.Bucket{BucketLength: 600})
 
 }
