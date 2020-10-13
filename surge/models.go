@@ -24,13 +24,3 @@ func (b *Bucket) BeforeSave(tx *gorm.DB) (err error) {
     b.ExpDate = time.Now().Add(time.Second * time.Duration(b.BucketLength))
     return
 }
-
-
-type District struct {
-	gorm.Model
-
-	Buckets []Bucket
-
-	Code    uint
-
-}
