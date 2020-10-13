@@ -7,9 +7,18 @@ import (
     "strconv"
 )
 
-var BucketLength uint64
+type Constants struct {
+    BucketLength    uint64
 
-func Init()  {
+    PostgresUser    string
+    PostgresPass    string
+    PostgresDB    string
+
+}
+
+var Consts Constants
+
+func InitConstants()  {
 
     // loading .env file to environment variables
     err := godotenv.Load()
@@ -18,11 +27,6 @@ func Init()  {
     }
 
     // set bucket length
-    BucketLength, _ = strconv.ParseUint(os.Getenv("BUCKET_LENGTH"), 10, 64)
-
-
-    // init database
-    InitDB()
-
+    Consts.BucketLength, _ = strconv.ParseUint(os.Getenv("BUCKET_LENGTH"), 10, 64)
 
 }
