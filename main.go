@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/mhmd-bb/snapp-surge/config"
 	"github.com/mhmd-bb/snapp-surge/database"
+	"github.com/mhmd-bb/snapp-surge/osm"
 	"github.com/mhmd-bb/snapp-surge/surge"
 	"gorm.io/gorm"
 )
@@ -26,7 +28,19 @@ func main() {
 	// migrate all models
 	Migrate(db)
 
+	r := gin.Default()
 
-	db.Create(&surge.Bucket{BucketLength: 600})
+	// setup osm package
+	osmService := osm.NewOpenStreetMapService(db)
+
+	// setup surge package
+	surgeService := surge.NewSurgeService(db, osmService)
+	surgeController := surge.NewSurgeController(surgeService, config.Consts.BucketLength)
+	surgeRouter := surge.NewSurgeRouter(surgeController)
+
+	// setup router
+	surgeRouter.SetupRouter(r)
+
+	r.Run()
 
 }
