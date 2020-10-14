@@ -9,18 +9,20 @@ type Bucket struct {
 
     BucketLength    uint64    `gorm:"-"`
 
-	gorm.Model
+    ID   uint64      `gorm:"primaryKey"`
 
-	ExpDate     time.Time
+    CreatedAt   time.Time       `gorm:"autoCreateTime;index"`
+
+	ExpDate     time.Time       `gorm:"index:idx_member"`
 
 	Counter     uint64    `gorm:"default:1"`
 
-	DistrictID  uint
+	DistrictID  uint8       `gorm:"index:idx_member"`
 
 }
 
-// set the expiration time on save of Bucket
-func (b *Bucket) BeforeSave(tx *gorm.DB) (err error) {
-    b.ExpDate = time.Now().Add(time.Second * time.Duration(b.BucketLength))
-    return
+// set the expiration time on create of Bucket
+func (b *Bucket) BeforeCreate(tx *gorm.DB) (err error) {
+   b.ExpDate = time.Now().Add(time.Second * time.Duration(b.BucketLength))
+   return
 }
