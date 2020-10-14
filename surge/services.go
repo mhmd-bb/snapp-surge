@@ -9,6 +9,8 @@ import (
 type SurgeService struct {
     DB      *gorm.DB
     OsmService      *osm.OpenStreetMapService
+    bucketLength    uint64
+
 }
 
 func (s *SurgeService) IncrementLastActiveBucket(bucket *Bucket, district uint8) (err error) {
@@ -42,7 +44,7 @@ func (s *SurgeService) GetLastActiveBucketByDistrict(bucket *Bucket, district ui
 
 func (s *SurgeService) CreateBucket(bucket *Bucket, district uint8) (err error){
 
-    *bucket = Bucket{DistrictID: district, BucketLength: 600}
+    *bucket = Bucket{DistrictID: district, BucketLength: s.bucketLength}
 
     err = s.DB.Create(bucket).Error
 
@@ -61,7 +63,7 @@ func (s *SurgeService) GetDistrictIDFromLocation(lat float32, lon float32) uint8
     return s.OsmService.GetDistrictIDFromLocation(lat, lon)
 }
 
-func NewSurgeService(db *gorm.DB, osmService *osm.OpenStreetMapService) *SurgeService {
+func NewSurgeService(db *gorm.DB, osmService *osm.OpenStreetMapService, bucketLength uint64) *SurgeService {
 
-    return &SurgeService{DB: db, OsmService: osmService}
+    return &SurgeService{DB: db, OsmService: osmService, bucketLength: bucketLength}
 }

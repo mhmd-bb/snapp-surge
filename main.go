@@ -34,8 +34,8 @@ func main() {
 	osmService := osm.NewOpenStreetMapService(db)
 
 	// setup surge package
-	surgeService := surge.NewSurgeService(db, osmService)
-	surgeController := surge.NewSurgeController(surgeService, config.Consts.BucketLength)
+	surgeService := surge.NewSurgeService(db, osmService, config.Consts.BucketLength)
+	surgeController := surge.NewSurgeController(surgeService)
 	surgeRouter := surge.NewSurgeRouter(surgeController)
 
 	// setup router

@@ -8,7 +8,6 @@ import (
 
 type SurgeController struct {
     surgeService    *SurgeService
-    bucketLength    uint64
 }
 
 func (sc *SurgeController)Ride(c *gin.Context) {
@@ -45,7 +44,7 @@ func (sc *SurgeController)Ride(c *gin.Context) {
     c.JSON(http.StatusOK, bucket)
 }
 
-func NewSurgeController(surgeService *SurgeService, bucketLength uint64) *SurgeController{
+func NewSurgeController(surgeService *SurgeService) *SurgeController{
 
-    return &SurgeController{surgeService: surgeService, bucketLength: bucketLength}
+    return &SurgeController{surgeService: surgeService}
 }
