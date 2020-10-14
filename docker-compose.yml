@@ -1,6 +1,8 @@
 version: "3"
 services:
 
+
+  # export geojson to postgis and exits
   gdal:
     build:
       dockerfile: ./Dockerfile

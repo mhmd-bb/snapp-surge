@@ -11,17 +11,45 @@ type SurgeService struct {
     OsmService      *osm.OpenStreetMapService
 }
 
-func (s *SurgeService) IncrementLastActiveBucket(district uint8) {
+func (s *SurgeService) IncrementLastActiveBucket(bucket *Bucket, district uint8) (err error) {
 
     // 1.get last bucket that hasn't expired yet and increment it's counter by one
     // 2.if no bucket found create a new one
+
+    err = s.GetLastActiveBucketByDistrict(bucket, district)
+
+    if err != nil {
+        err = s.CreateBucket(bucket, district)
+        return err
+    }
+
+    err = s.IncrementBucketCounter(bucket)
+
+    return err
 }
 
-func (s *SurgeService) CreateBucket(district uint8) {
-
+func (s *SurgeService) IncrementBucketCounter(bucket *Bucket) (err error){
+    bucket.Counter += 1
+    err = s.DB.Save(bucket).Error
+    return err
 }
 
-func (s *SurgeService) SumAllBucketsAfterGivenTime(district uint8, after time.Time) {
+func (s *SurgeService) GetLastActiveBucketByDistrict(bucket *Bucket, district uint8) (err error){
+
+    err = s.DB.First(&bucket, "exp_date > ? AND district_id = ?", time.Now(), district).Error
+    return err
+}
+
+func (s *SurgeService) CreateBucket(bucket *Bucket, district uint8) (err error){
+
+    *bucket = Bucket{DistrictID: district, BucketLength: 600}
+
+    err = s.DB.Create(bucket).Error
+
+    return err
+}
+
+func (s *SurgeService) SumAllBucketsAfterGivenTime(district uint8, windowLength uint64) {
 
 }
 
