@@ -13,6 +13,7 @@ import (
 
 func Migrate(db *gorm.DB) {
 	db.AutoMigrate(&surge.Bucket{})
+	db.AutoMigrate(&surge.Rule{})
 
 	fmt.Println("Migrations were successful")
 }
@@ -34,7 +35,7 @@ func main() {
 	osmService := osm.NewOpenStreetMapService(db)
 
 	// setup surge package
-	surgeService := surge.NewSurgeService(db, osmService, config.Consts.BucketLength)
+	surgeService := surge.NewSurgeService(db, osmService, config.Consts.BucketLength, config.Consts.WindowLength)
 	surgeController := surge.NewSurgeController(surgeService)
 	surgeRouter := surge.NewSurgeRouter(surgeController)
 
