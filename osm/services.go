@@ -11,15 +11,17 @@ type OpenStreetMapService struct {
 }
 
 
-func (osmService *OpenStreetMapService) GetDistrictIDFromLocation(lat float32, lon float32) uint8{
+func (osmService *OpenStreetMapService) GetDistrictIDFromLocation(lat float32, lon float32) (district uint8, err error){
 
     var districtID string
 
-    osmService.DB.Raw(osmService.QB.GetDistrictIDFromLocation(lat, lon)).Scan(&districtID)
+    err = osmService.DB.Raw(osmService.QB.GetDistrictIDFromLocation(lat, lon)).Scan(&districtID).Error
 
     u, _ := strconv.ParseUint(districtID,10, 64)
 
-    return  uint8(u)
+    district = uint8(u)
+
+    return  district, err
 
 }
 
