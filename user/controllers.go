@@ -5,33 +5,38 @@ import (
     "github.com/jackc/pgconn"
     "net/http"
 )
-import "github.com/go-playground/validator"
 
 type UsersController struct {
-    usersService    *UsersService
+    usersService    IUserService
+}
+
+func (uc *UsersController)Login(c *gin.Context) {
+    var usersDto UsersDto
+
+    err := c.BindJSON(&usersDto)
+    if err != nil {
+        _ = c.Error(err)
+        return
+    }
+
+    var user User
+    var jwt string
+    err = uc.usersService.LoginUser(&user, &jwt, &usersDto)
+    if err != nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"message": "unable to login", "status": http.StatusUnauthorized})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"message": "user logged in successfully", "status": http.StatusOK, "token": jwt})
 }
 
 func (uc *UsersController)CreateUser(c *gin.Context) {
 
     var usersDto UsersDto
+
     err := c.BindJSON(&usersDto)
-
-    // return exact error on each field
     if err != nil {
-
-        if err.Error() == "EOF" {
-            c.JSON(400, gin.H{"message": "provide username and password", "status": 400})
-            return
-        }
-        errs, _ := err.(validator.ValidationErrors)
-
-        e := make(map[string]string)
-
-        for _, err := range errs {
-            e[err.Field()] = err.Tag()
-        }
-
-        c.JSON(400, e)
+        _ = c.Error(err)
         return
     }
 
@@ -46,6 +51,6 @@ func (uc *UsersController)CreateUser(c *gin.Context) {
     c.JSON(http.StatusCreated, gin.H{"message": "user created successfully", "status": http.StatusCreated})
 }
 
-func NewUsersController(usersService *UsersService) *UsersController {
+func NewUsersController(usersService IUserService) *UsersController {
     return &UsersController{usersService}
 }
