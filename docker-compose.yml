@@ -2,18 +2,19 @@ version: "3"
 services:
 
 
-  # export geojson to postgis and exits
+  # export geojson to postgis and exit
   gdal:
     build:
       dockerfile: ./Dockerfile
-      context: ./osm
+      context: ./osm-export
     env_file:
       - ./.env
     depends_on:
       - postgres
-    command: bash -c "chmod +x /osm/export.sh && ./osm/export.sh"
+    restart: on-failure
+    command: bash -c "chmod +x /osm-export/export.sh && ./osm-export/export.sh"
     volumes:
-      - ./osm:/osm
+      - ./osm-export:/osm-export
 
   postgres:
     image: "postgis/postgis"
