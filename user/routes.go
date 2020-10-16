@@ -2,6 +2,7 @@ package user
 
 import (
 "github.com/gin-gonic/gin"
+    "github.com/mhmd-bb/snapp-surge/auth"
 )
 
 type UsersRouter struct {
@@ -10,9 +11,10 @@ type UsersRouter struct {
 
 func (sr *UsersRouter) SetupRouter(r *gin.Engine) *gin.Engine {
 
-    surge := r.Group("/users")
+    surge := r.Group("/users", BadRequestErrorMiddleware())
     {
-        surge.POST("register", sr.usersController.CreateUser)
+        surge.POST("register", auth.AuthorizeJWT(), sr.usersController.CreateUser)
+        surge.POST("login", sr.usersController.Login)
     }
 
     return r
