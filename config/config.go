@@ -9,6 +9,7 @@ import (
 
 type Constants struct {
     BucketLength    uint64
+    WindowLength    uint64
 
     PostgresUser    string
     PostgresPass    string
@@ -28,5 +29,12 @@ func InitConstants()  {
 
     // set bucket length
     Consts.BucketLength, _ = strconv.ParseUint(os.Getenv("BUCKET_LENGTH"), 10, 64)
+    // set window length
+    Consts.WindowLength, _ = strconv.ParseUint(os.Getenv("WINDOW_LENGTH"), 10, 64)
+    // set postgres constants
+    Consts.PostgresDB = os.Getenv("POSTGRES_DB")
+    Consts.PostgresUser = os.Getenv("POSTGRES_USER")
+    Consts.PostgresPass = os.Getenv("POSTGRES_PASSWORD")
+
 
 }
