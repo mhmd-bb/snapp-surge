@@ -8,18 +8,23 @@ import (
 )
 
 type Constants struct {
-    BucketLength    uint64
-    WindowLength    uint64
+    BucketLength uint64
+    WindowLength uint64
 
-    PostgresUser    string
-    PostgresPass    string
-    PostgresDB    string
+    PostgresUser string
+    PostgresPass string
+    PostgresDB   string
 
+    JwtSecret string
+    JwtTtl    uint64
+
+    DefaultAdminUsername string
+    DefaultAdminPassword string
 }
 
 var Consts Constants
 
-func InitConstants()  {
+func InitConstants() {
 
     // loading .env file to environment variables
     err := godotenv.Load()
@@ -36,5 +41,10 @@ func InitConstants()  {
     Consts.PostgresUser = os.Getenv("POSTGRES_USER")
     Consts.PostgresPass = os.Getenv("POSTGRES_PASSWORD")
 
+    Consts.JwtSecret = os.Getenv("JWT_SECRET")
+    Consts.JwtTtl, _ = strconv.ParseUint(os.Getenv("JWT_TTL"), 10, 64)
+
+    Consts.DefaultAdminUsername = os.Getenv("DEFAULT_ADMIN_USERNAME")
+    Consts.DefaultAdminPassword = os.Getenv("DEFAULT_ADMIN_PASSWORD")
 
 }
