@@ -17,6 +17,9 @@ type Constants struct {
 
     JwtSecret string
     JwtTtl    uint64
+
+    DefaultAdminUsername string
+    DefaultAdminPassword string
 }
 
 var Consts Constants
@@ -40,5 +43,8 @@ func InitConstants() {
 
     Consts.JwtSecret = os.Getenv("JWT_SECRET")
     Consts.JwtTtl, _ = strconv.ParseUint(os.Getenv("JWT_TTL"), 10, 64)
+
+    Consts.DefaultAdminUsername = os.Getenv("DEFAULT_ADMIN_USERNAME")
+    Consts.DefaultAdminPassword = os.Getenv("DEFAULT_ADMIN_PASSWORD")
 
 }

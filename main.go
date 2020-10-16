@@ -48,6 +48,9 @@ func main() {
 	usersController := user.NewUsersController(usersService)
 	usersRouter := user.NewUsersRouter(usersController)
 
+	// create Default admin user if there is no other users in db
+	_ = usersService.CreateDefaultUser(config.Consts.DefaultAdminUsername, config.Consts.DefaultAdminPassword)
+
 	// setup osm package
 	osmService := osm.NewOpenStreetMapService(db)
 

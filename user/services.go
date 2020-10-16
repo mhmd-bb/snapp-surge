@@ -1,6 +1,7 @@
 package user
 
 import (
+    "errors"
     "github.com/mhmd-bb/snapp-surge/auth"
     "gorm.io/gorm"
 )
@@ -10,6 +11,7 @@ type IUserService interface {
     UpdatePassword(user *User, dto *UsersDto) (err error)
     LoginUser(user *User,jwt *string , dto *UsersDto) (err error)
     GetByUsername(user *User, username string) (err error)
+    CreateDefaultUser(username string, password string) (err error)
 }
 
 type UsersService struct {
@@ -83,6 +85,20 @@ func (us *UsersService) UpdatePassword(user *User, dto *UsersDto) (err error) {
     err = us.DB.Model(user).Update("password", user.Password).Error
     return err
 }
+
+func (us *UsersService) CreateDefaultUser(username string, password string) (err error) {
+    var user User
+    userDto := UsersDto{username, password}
+
+    err = us.DB.First(&user).Error
+
+    // if no user is found in database, create one
+    if errors.Is(err, gorm.ErrRecordNotFound) {
+        err = us.CreateUser(&user, &userDto)
+    }
+    return err
+}
+
 
 func NewUsersService(db *gorm.DB, authService auth.IJwtAuthService) *UsersService{
     return &UsersService{DB: db, authService: authService}
