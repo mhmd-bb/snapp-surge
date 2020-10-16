@@ -12,11 +12,13 @@ type SurgeController struct {
 
 func (sc *SurgeController)Ride(c *gin.Context) {
 
+    // Declare user input Data Transfer Object
     var latLonDto LatLonDto
 
     // get request body and validate it
     err := c.BindJSON(&latLonDto)
 
+    // return exact error on each field
     if err != nil {
 
         errors, _ := err.(validator.ValidationErrors)
@@ -30,18 +32,40 @@ func (sc *SurgeController)Ride(c *gin.Context) {
         return
     }
 
-    // get district id from osm service
-    districtID := sc.surgeService.GetDistrictIDFromLocation(latLonDto.Lat, latLonDto.Lon)
+    // Get District ID from latitude and longitude
+    // if it's not in supported region return appropriate error
+    var districtID uint8
+    err = sc.surgeService.GetDistrictIDFromLocation(&districtID, latLonDto.Lat, latLonDto.Lon)
+    if districtID == 0 {
+        c.JSON(http.StatusOK, gin.H{"error": "Latitude and Longitude is not in supported region"})
+        return
+    }
 
-    var bucket Bucket
+    // Get Last active bucket of requested district and increment its counter by one
+    var lastActiveBucket Bucket
+    err = sc.surgeService.IncrementLastActiveBucket(&lastActiveBucket, districtID)
+    if err != nil {
+        c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+        return
+    }
 
-    err = sc.surgeService.IncrementLastActiveBucket(&bucket, districtID)
+    // Add all bucket counters in moving window
+    var requestsCountInWindow uint64
+    err = sc.surgeService.SumAllBucketsInCurrentWindow(&requestsCountInWindow, districtID)
+    if err != nil {
+        c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+        return
+    }
 
-    //TODO sum all buckets in current interval (ex: 2 hours)
+    // Get Coefficient from count of requests
+    var coefficient float32
+    err = sc.surgeService.CalculateCoefficient(&coefficient, requestsCountInWindow)
+    if err != nil {
+        c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+        return
+    }
 
-    //TODO calculate coefficient
-
-    c.JSON(http.StatusOK, bucket)
+    c.JSON(http.StatusOK, gin.H{"coefficient": coefficient})
 }
 
 func NewSurgeController(surgeService *SurgeService) *SurgeController{
