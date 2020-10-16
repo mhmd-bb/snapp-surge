@@ -26,3 +26,8 @@ func (b *Bucket) BeforeCreate(tx *gorm.DB) (err error) {
    b.ExpDate = time.Now().Add(time.Second * time.Duration(b.BucketLength))
    return
 }
+
+type Rule struct {
+    Threshold   uint64
+    Coefficient float32
+}
