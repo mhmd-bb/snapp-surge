@@ -1,17 +1,15 @@
-package user
+package auth
 
 import (
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
+    "github.com/mhmd-bb/snapp-surge/config"
     "net/http"
-    "os"
     "strings"
 )
 
 func AuthorizeJWT() gin.HandlerFunc {
     return func(c *gin.Context) {
-
-        const BearerSchema = "Bearer "
 
         authHeader := c.GetHeader("Authorization")
 
@@ -32,7 +30,7 @@ func AuthorizeJWT() gin.HandlerFunc {
         }
 
         parsedToken, err := jwt.ParseWithClaims(authHeader, claims, func(token *jwt.Token) (interface{}, error) {
-            return os.Getenv("JWT_SECRET"), nil
+            return []byte(config.Consts.JwtSecret), nil
         })
 
         if err != nil {

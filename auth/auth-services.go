@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
     "fmt"
@@ -40,7 +40,7 @@ func (service *JwtService) GenerateJwtToken(username string) string {
 }
 
 
-func (service *JwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
+func (service *JwtService) ValidateJwtToken(encodedToken string) (*jwt.Token, error) {
     return jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
         if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
             return nil, fmt.Errorf("Invalid token", token.Header["alg"])
@@ -50,6 +50,6 @@ func (service *JwtService) ValidateToken(encodedToken string) (*jwt.Token, error
     })
 }
 
-func NewJwtService(secret string) *JwtService{
-    return &JwtService{secretKey: secret}
+func NewJwtService(secret string, tokenExpiration uint64) *JwtService {
+    return &JwtService{secretKey: secret, tokenExpiration: tokenExpiration}
 }
