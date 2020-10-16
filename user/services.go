@@ -1,16 +1,20 @@
 package user
 
-import "gorm.io/gorm"
+import (
+    "github.com/mhmd-bb/snapp-surge/auth"
+    "gorm.io/gorm"
+)
 
 type IUserService interface {
     CreateUser(user *User, dto *UsersDto) (err error)
     UpdatePassword(user *User, dto *UsersDto) (err error)
-    LoginUser(user *User, dto *UsersDto) (err error)
+    LoginUser(user *User,jwt *string , dto *UsersDto) (err error)
     GetByUsername(user *User, username string) (err error)
 }
 
 type UsersService struct {
     DB  *gorm.DB
+    authService auth.IJwtAuthService
 }
 
 // Get One user by username
@@ -38,7 +42,7 @@ func (us *UsersService) CreateUser(user *User, dto *UsersDto) (err error){
 
 }
 
-func (us *UsersService) LoginUser(user *User, dto *UsersDto) (err error) {
+func (us *UsersService) LoginUser(user *User,jwt *string , dto *UsersDto) (err error) {
 
     *user = User{Username: dto.Username, Password: dto.Password}
 
@@ -56,6 +60,9 @@ func (us *UsersService) LoginUser(user *User, dto *UsersDto) (err error) {
     }
 
     *user = dbUser
+
+    *jwt = us.authService.GenerateJwtToken(user.Username)
+
     return nil
 
 }
@@ -77,6 +84,6 @@ func (us *UsersService) UpdatePassword(user *User, dto *UsersDto) (err error) {
     return err
 }
 
-func NewUsersService(db *gorm.DB) *UsersService{
-    return &UsersService{DB: db}
+func NewUsersService(db *gorm.DB, authService auth.IJwtAuthService) *UsersService{
+    return &UsersService{DB: db, authService: authService}
 }
