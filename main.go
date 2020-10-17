@@ -40,7 +40,7 @@ func main() {
 
 	r := gin.Default()
 
-	// setup auth package
+	// setup auth service
 	var jwtAuthService auth.IJwtAuthService = auth.NewJwtService(config.Consts.JwtSecret, config.Consts.JwtTtl)
 
 	// setup user package
@@ -55,7 +55,7 @@ func main() {
 	osmService := osm.NewOpenStreetMapService(db)
 
 	// setup surge package
-	surgeService := surge.NewSurgeService(db, osmService, config.Consts.BucketLength, config.Consts.WindowLength)
+	var surgeService surge.ISurgeService = surge.NewSurgeService(db, osmService, config.Consts.BucketLength, config.Consts.WindowLength)
 	surgeController := surge.NewSurgeController(surgeService)
 	surgeRouter := surge.NewSurgeRouter(surgeController)
 
