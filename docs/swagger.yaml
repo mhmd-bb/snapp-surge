@@ -1,0 +1,214 @@
+definitions:
+  surge.DeleteRuleDto:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+  surge.LatLonDto:
+    properties:
+      lat:
+        example: 51.13199462890625
+        type: number
+      lon:
+        example: 35.73425097869431
+        type: number
+    required:
+    - lat
+    - lon
+    type: object
+  surge.RuleDto:
+    properties:
+      coefficient:
+        example: 1.12
+        type: number
+      threshold:
+        example: 12
+        type: integer
+    required:
+    - coefficient
+    - threshold
+    type: object
+  user.UpdatePasswordDto:
+    properties:
+      password:
+        description: password must be longer than 4 chars
+        type: string
+    required:
+    - password
+    type: object
+  user.UsersDto:
+    properties:
+      password:
+        description: password must be longer than 4 chars
+        example: admin
+        type: string
+      username:
+        description: username must be longer than 4 chars
+        example: admin
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Snapp Surge Service.
+  title: Surge
+  version: "1.0"
+paths:
+  /rules/create:
+    post:
+      consumes:
+      - application/json
+      description: Create New Rule
+      parameters:
+      - description: rule
+        in: body
+        name: rule
+        required: true
+        schema:
+          $ref: '#/definitions/surge.RuleDto'
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "401": {}
+      security:
+      - Bearer: []
+      summary: Create New Rule
+      tags:
+      - Rule
+  /rules/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete One Rule By It's ID
+      parameters:
+      - description: Rule ID
+        in: body
+        name: ID
+        required: true
+        schema:
+          $ref: '#/definitions/surge.DeleteRuleDto'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400": {}
+        "401": {}
+      security:
+      - Bearer: []
+      summary: Delete Rule
+      tags:
+      - Rule
+  /rules/get/all:
+    get:
+      consumes:
+      - application/json
+      description: Get All Rules
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "401": {}
+      security:
+      - Bearer: []
+      summary: Get All Rules
+      tags:
+      - Rule
+  /surge/ride:
+    post:
+      consumes:
+      - application/json
+      description: 'Ride request: calculates coefficient and increments that district''s requests'
+      parameters:
+      - description: Latitude and Longitude
+        in: body
+        name: location
+        required: true
+        schema:
+          $ref: '#/definitions/surge.LatLonDto'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400": {}
+      summary: Coefficient Request
+      tags:
+      - Surge
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login Admin
+      parameters:
+      - description: login info
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/user.UsersDto'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400": {}
+        "401": {}
+      summary: Login
+      tags:
+      - User
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Create User By Admin
+      parameters:
+      - description: user info
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/user.UsersDto'
+      produces:
+      - application/json
+      responses:
+        "201": {}
+        "400": {}
+        "401": {}
+      security:
+      - Bearer: []
+      summary: Create User
+      tags:
+      - User
+  /users/update/password:
+    patch:
+      consumes:
+      - application/json
+      description: Change your password
+      parameters:
+      - description: user new password
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdatePasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400": {}
+        "401": {}
+      security:
+      - Bearer: []
+      summary: Update Password
+      tags:
+      - User
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

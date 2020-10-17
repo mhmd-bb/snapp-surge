@@ -6,9 +6,12 @@ import (
 	"github.com/mhmd-bb/snapp-surge/auth"
 	"github.com/mhmd-bb/snapp-surge/config"
 	"github.com/mhmd-bb/snapp-surge/database"
+	_ "github.com/mhmd-bb/snapp-surge/docs"
 	"github.com/mhmd-bb/snapp-surge/osm"
 	"github.com/mhmd-bb/snapp-surge/surge"
 	"github.com/mhmd-bb/snapp-surge/user"
+	swaggerFiles "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
@@ -26,6 +29,16 @@ func JSONMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+// @title Surge
+// @version 1.0
+// @description Snapp Surge Service.
+
+// @host localhost:8080
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
 
 func main() {
 
@@ -65,6 +78,11 @@ func main() {
 	// setup router
 	surgeRouter.SetupRouter(r)
 	usersRouter.SetupRouter(r)
+
+	// setup swagger
+	url := ginSwagger.URL("http://localhost:8080/swagger/swagger.json") // The url pointing to API definition
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	r.Static("/swagger", "docs/")
 
 	r.Run()
 

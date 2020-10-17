@@ -11,6 +11,17 @@ type UsersController struct {
     usersService    IUserService
 }
 
+// User godoc
+// @Summary Login
+// @Description Login Admin
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param credentials body UsersDto true "login info"
+// @Success 200
+// @Failure 400
+// @Failure 401
+// @Router /users/login [post]
 func (uc *UsersController)Login(c *gin.Context) {
     var usersDto UsersDto
 
@@ -31,6 +42,18 @@ func (uc *UsersController)Login(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "user logged in successfully", "status": http.StatusOK, "token": jwt})
 }
 
+// User godoc
+// @Summary Create User
+// @Description Create User By Admin
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param credentials body UsersDto true "user info"
+// @Success 201
+// @Failure 400
+// @Failure 401
+// @Security Bearer
+// @Router /users/register [post]
 func (uc *UsersController)CreateUser(c *gin.Context) {
 
     var usersDto UsersDto
@@ -52,6 +75,18 @@ func (uc *UsersController)CreateUser(c *gin.Context) {
     c.JSON(http.StatusCreated, gin.H{"message": "user created successfully", "status": http.StatusCreated})
 }
 
+// User godoc
+// @Summary Update Password
+// @Description Change your password
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param credentials body UpdatePasswordDto true "user new password"
+// @Success 200
+// @Failure 400
+// @Failure 401
+// @Security Bearer
+// @Router /users/update/password [patch]
 func (uc *UsersController)UpdatePassword(c *gin.Context) {
 
     var passwordDto UpdatePasswordDto

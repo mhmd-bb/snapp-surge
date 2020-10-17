@@ -10,6 +10,16 @@ type SurgeController struct {
     surgeService    ISurgeService
 }
 
+// Surge godoc
+// @Summary Coefficient Request
+// @Description Ride request: calculates coefficient and increments that district's requests
+// @Tags Surge
+// @Accept  json
+// @Produce  json
+// @Param location body LatLonDto true "Latitude and Longitude"
+// @Success 200
+// @Failure 400
+// @Router /surge/ride [post]
 func (sc *SurgeController)Ride(c *gin.Context) {
 
     // Declare user input Data Transfer Object
@@ -68,6 +78,16 @@ func (sc *SurgeController)Ride(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"coefficient": coefficient})
 }
 
+// Rule godoc
+// @Summary Get All Rules
+// @Description Get All Rules
+// @Tags Rule
+// @Accept  json
+// @Produce  json
+// @Success 200
+// @Failure 401
+// @Security Bearer
+// @Router /rules/get/all [get]
 func (sc *SurgeController)GetAllRules(c *gin.Context) {
     rules, err := sc.surgeService.GetAllRules()
 
@@ -80,6 +100,17 @@ func (sc *SurgeController)GetAllRules(c *gin.Context) {
     return
 }
 
+// Rule godoc
+// @Summary Create New Rule
+// @Description Create New Rule
+// @Tags Rule
+// @Accept  json
+// @Produce  json
+// @Param rule body RuleDto true "rule"
+// @Success 201
+// @Failure 401
+// @Security Bearer
+// @Router /rules/create [post]
 func (sc *SurgeController)CreateRule(c *gin.Context) {
 
     var ruleDto RuleDto
@@ -103,6 +134,18 @@ func (sc *SurgeController)CreateRule(c *gin.Context) {
     return
 }
 
+// Rule godoc
+// @Summary Delete Rule
+// @Description Delete One Rule By It's ID
+// @Tags Rule
+// @Accept  json
+// @Produce  json
+// @Param Rule ID body DeleteRuleDto true "Rule ID"
+// @Success 200
+// @Failure 400
+// @Failure 401
+// @Security Bearer
+// @Router /rules/delete [delete]
 func (sc *SurgeController)DeleteRuleById(c *gin.Context) {
 
     var deleteRuleDto DeleteRuleDto
