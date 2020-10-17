@@ -7,7 +7,7 @@ import (
 )
 
 type SurgeController struct {
-    surgeService    *SurgeService
+    surgeService    ISurgeService
 }
 
 func (sc *SurgeController)Ride(c *gin.Context) {
@@ -68,7 +68,62 @@ func (sc *SurgeController)Ride(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"coefficient": coefficient})
 }
 
-func NewSurgeController(surgeService *SurgeService) *SurgeController{
+func (sc *SurgeController)GetAllRules(c *gin.Context) {
+    rules, err := sc.surgeService.GetAllRules()
+
+    if err != nil {
+        _ = c.Error(err)
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"message": "rules fetched successfully", "rules": rules, "status": http.StatusOK})
+    return
+}
+
+func (sc *SurgeController)CreateRule(c *gin.Context) {
+
+    var ruleDto RuleDto
+
+    err := c.BindJSON(&ruleDto)
+    if err != nil {
+        _ = c.Error(err)
+        return
+    }
+
+    var rule Rule
+
+    err = sc.surgeService.CreateRule(&rule, ruleDto)
+
+    if err != nil {
+        _ = c.Error(err)
+        return
+    }
+
+    c.JSON(http.StatusCreated, gin.H{"message": "rule created successfully", "rule": rule, "status": http.StatusCreated})
+    return
+}
+
+func (sc *SurgeController)DeleteRuleById(c *gin.Context) {
+
+    var deleteRuleDto DeleteRuleDto
+
+    err := c.BindJSON(&deleteRuleDto)
+    if err != nil {
+        _ = c.Error(err)
+        return
+    }
+
+    err = sc.surgeService.DeleteRuleById(deleteRuleDto.Id)
+    if err != nil {
+        _ = c.Error(err)
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"message": "rule deleted successfully", "status": http.StatusOK})
+    return
+}
+
+func NewSurgeController(surgeService ISurgeService) *SurgeController{
 
     return &SurgeController{surgeService: surgeService}
 }
