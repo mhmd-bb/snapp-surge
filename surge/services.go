@@ -109,7 +109,7 @@ func (s *SurgeService) SumAllBucketsInCurrentWindow(n *uint64, district uint8) (
 func (s *SurgeService) CalculateCoefficient(coefficient *float32, counter uint64) (err error) {
     var rule Rule
 
-    err = s.DB.Select("coefficient").Where("threshold <= ?", counter).Last(&rule).Error
+    err = s.DB.Where("threshold <= ?", counter).Order("threshold desc").Last(&rule).Error
 
     *coefficient = rule.Coefficient
 
