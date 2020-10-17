@@ -2,7 +2,6 @@ package surge
 
 import (
     "errors"
-    "fmt"
     "github.com/mhmd-bb/snapp-surge/osm"
     "gorm.io/gorm"
     "time"
@@ -151,8 +150,6 @@ func (s *SurgeService) GetAllRules() (rules []Rule, err error){
 func (s *SurgeService) DeleteRuleById(id uint64) (err error){
 
     err = s.DB.Delete(&Rule{ID: id}).Error
-
-    fmt.Println("shit", err)
 
     return err
 }
