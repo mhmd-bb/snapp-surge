@@ -38,7 +38,7 @@ func AuthorizeJWT() gin.HandlerFunc {
                 c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": http.StatusUnauthorized, "message": "Invalid Token"})
                 return
             }
-            c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": "Bad Request"})
+            c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": http.StatusUnauthorized, "message": "Unauthorized"})
             return
         }
 
@@ -46,6 +46,9 @@ func AuthorizeJWT() gin.HandlerFunc {
             c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": http.StatusUnauthorized, "message": "Invalid Token"})
             return
         }
+
+        // add token body to context
+        c.Set("auth", parsedToken.Claims)
 
         c.Next()
 
