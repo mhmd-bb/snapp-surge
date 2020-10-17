@@ -1,6 +1,7 @@
 package user
 
 import (
+    "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
     "github.com/jackc/pgconn"
     "net/http"
@@ -49,6 +50,29 @@ func (uc *UsersController)CreateUser(c *gin.Context) {
     }
 
     c.JSON(http.StatusCreated, gin.H{"message": "user created successfully", "status": http.StatusCreated})
+}
+
+func (uc *UsersController)UpdatePassword(c *gin.Context) {
+
+    var passwordDto UpdatePasswordDto
+
+    err := c.BindJSON(&passwordDto)
+    if err != nil {
+        _ = c.Error(err)
+        return
+    }
+
+    // get user info from jwt
+    auth, _ := c.Get("auth")
+    username := auth.(jwt.MapClaims)["username"].(string)
+
+    // create userDto
+    userDto := UsersDto{Username: username, Password: passwordDto.Password}
+
+    var user User
+    err = uc.usersService.UpdatePassword(&user, &userDto)
+
+    c.JSON(http.StatusOK, gin.H{"message": "password updated successfully", "status": http.StatusOK})
 }
 
 func NewUsersController(usersService IUserService) *UsersController {
