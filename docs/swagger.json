@@ -1,0 +1,325 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Snapp Surge Service.",
+        "title": "Surge",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/rules/create": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create New Rule",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rule"
+                ],
+                "summary": "Create New Rule",
+                "parameters": [
+                    {
+                        "description": "rule",
+                        "name": "rule",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/surge.RuleDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "401": {}
+                }
+            }
+        },
+        "/rules/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete One Rule By It's ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rule"
+                ],
+                "summary": "Delete Rule",
+                "parameters": [
+                    {
+                        "description": "Rule ID",
+                        "name": "ID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/surge.DeleteRuleDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {},
+                    "401": {}
+                }
+            }
+        },
+        "/rules/get/all": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get All Rules",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rule"
+                ],
+                "summary": "Get All Rules",
+                "responses": {
+                    "200": {},
+                    "401": {}
+                }
+            }
+        },
+        "/surge/ride": {
+            "post": {
+                "description": "Ride request: calculates coefficient and increments that district's requests",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Surge"
+                ],
+                "summary": "Coefficient Request",
+                "parameters": [
+                    {
+                        "description": "Latitude and Longitude",
+                        "name": "location",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/surge.LatLonDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {}
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "description": "Login Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "login info",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UsersDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {},
+                    "401": {}
+                }
+            }
+        },
+        "/users/register": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create User By Admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create User",
+                "parameters": [
+                    {
+                        "description": "user info",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UsersDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {},
+                    "400": {},
+                    "401": {}
+                }
+            }
+        },
+        "/users/update/password": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Change your password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update Password",
+                "parameters": [
+                    {
+                        "description": "user new password",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdatePasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {},
+                    "401": {}
+                }
+            }
+        }
+    },
+    "definitions": {
+        "surge.DeleteRuleDto": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "surge.LatLonDto": {
+            "type": "object",
+            "required": [
+                "lat",
+                "lon"
+            ],
+            "properties": {
+                "lat": {
+                    "type": "number",
+                    "example": 51.13199462890625
+                },
+                "lon": {
+                    "type": "number",
+                    "example": 35.73425097869431
+                }
+            }
+        },
+        "surge.RuleDto": {
+            "type": "object",
+            "required": [
+                "coefficient",
+                "threshold"
+            ],
+            "properties": {
+                "coefficient": {
+                    "type": "number",
+                    "example": 1.12
+                },
+                "threshold": {
+                    "type": "integer",
+                    "example": 12
+                }
+            }
+        },
+        "user.UpdatePasswordDto": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "description": "password must be longer than 4 chars",
+                    "type": "string"
+                }
+            }
+        },
+        "user.UsersDto": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "password must be longer than 4 chars",
+                    "type": "string",
+                    "example": "admin"
+                },
+                "username": {
+                    "description": "username must be longer than 4 chars",
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
