@@ -17,7 +17,7 @@ func BadRequestErrorMiddleware() gin.HandlerFunc {
         var err error = detectedErrors[0]
 
         if err.Error() == "EOF" {
-            c.AbortWithStatusJSON(400, gin.H{"message": "provide username and password", "status": 400})
+            c.AbortWithStatusJSON(400, gin.H{"message": "provide request body", "status": 400})
             return
         }
 
