@@ -14,6 +14,7 @@ type Constants struct {
     PostgresUser string
     PostgresPass string
     PostgresDB   string
+    PostgresHost   string
 
     JwtSecret string
     JwtTtl    uint64
@@ -40,6 +41,7 @@ func InitConstants(logger *log.Logger) {
     Consts.PostgresDB = os.Getenv("POSTGRES_DB")
     Consts.PostgresUser = os.Getenv("POSTGRES_USER")
     Consts.PostgresPass = os.Getenv("POSTGRES_PASSWORD")
+    Consts.PostgresHost = os.Getenv("POSTGRES_HOST")
 
     Consts.JwtSecret = os.Getenv("JWT_SECRET")
     Consts.JwtTtl, err = strconv.ParseUint(os.Getenv("JWT_TTL"), 10, 64)
