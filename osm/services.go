@@ -1,32 +1,31 @@
 package osm
 
 import (
-    "gorm.io/gorm"
-    "strconv"
+	"gorm.io/gorm"
+	"strconv"
 )
 
 type OpenStreetMapService struct {
-    DB      *gorm.DB
-    QB      *OpenStreetMapQueryBuilder
+	DB *gorm.DB
+	QB *OpenStreetMapQueryBuilder
 }
 
+func (osmService *OpenStreetMapService) GetDistrictIDFromLocation(lat float32, lon float32) (district uint8, err error) {
 
-func (osmService *OpenStreetMapService) GetDistrictIDFromLocation(lat float32, lon float32) (district uint8, err error){
+	var districtID string
 
-    var districtID string
+	err = osmService.DB.Raw(osmService.QB.GetDistrictIDFromLocation(lat, lon)).Scan(&districtID).Error
 
-    err = osmService.DB.Raw(osmService.QB.GetDistrictIDFromLocation(lat, lon)).Scan(&districtID).Error
+	u, _ := strconv.ParseUint(districtID, 10, 64)
 
-    u, _ := strconv.ParseUint(districtID,10, 64)
+	district = uint8(u)
 
-    district = uint8(u)
-
-    return  district, err
+	return district, err
 
 }
 
-func NewOpenStreetMapService(db *gorm.DB) *OpenStreetMapService{
+func NewOpenStreetMapService(db *gorm.DB) *OpenStreetMapService {
 
-    return &OpenStreetMapService{DB: db, QB: &OpenStreetMapQueryBuilder{}}
+	return &OpenStreetMapService{DB: db, QB: &OpenStreetMapQueryBuilder{}}
 
 }
