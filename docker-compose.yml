@@ -30,7 +30,7 @@ services:
     - "8080:8080"
 
   postgres:
-    image: "postgis/postgis"
+    image: "postgis/postgis:13-master"
 
     env_file:
       - .env
