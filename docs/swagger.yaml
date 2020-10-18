@@ -1,11 +1,4 @@
 definitions:
-  surge.DeleteRuleDto:
-    properties:
-      id:
-        type: integer
-    required:
-    - id
-    type: object
   surge.LatLonDto:
     properties:
       lat:
@@ -59,7 +52,21 @@ info:
   title: Surge
   version: "1.0"
 paths:
-  /rules/create:
+  /rules:
+    get:
+      consumes:
+      - application/json
+      description: Get All Rules
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "401": {}
+      security:
+      - Bearer: []
+      summary: Get All Rules
+      tags:
+      - Rule
     post:
       consumes:
       - application/json
@@ -81,18 +88,17 @@ paths:
       summary: Create New Rule
       tags:
       - Rule
-  /rules/delete:
+  /rules/{id}:
     delete:
       consumes:
       - application/json
       description: Delete One Rule By It's ID
       parameters:
       - description: Rule ID
-        in: body
-        name: ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/surge.DeleteRuleDto'
+        type: integer
       produces:
       - application/json
       responses:
@@ -102,21 +108,6 @@ paths:
       security:
       - Bearer: []
       summary: Delete Rule
-      tags:
-      - Rule
-  /rules/get/all:
-    get:
-      consumes:
-      - application/json
-      description: Get All Rules
-      produces:
-      - application/json
-      responses:
-        "200": {}
-        "401": {}
-      security:
-      - Bearer: []
-      summary: Get All Rules
       tags:
       - Rule
   /surge/ride:
@@ -160,6 +151,29 @@ paths:
       summary: Login
       tags:
       - User
+  /users/password:
+    patch:
+      consumes:
+      - application/json
+      description: Change your password
+      parameters:
+      - description: user new password
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdatePasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400": {}
+        "401": {}
+      security:
+      - Bearer: []
+      summary: Update Password
+      tags:
+      - User
   /users/register:
     post:
       consumes:
@@ -181,29 +195,6 @@ paths:
       security:
       - Bearer: []
       summary: Create User
-      tags:
-      - User
-  /users/update/password:
-    patch:
-      consumes:
-      - application/json
-      description: Change your password
-      parameters:
-      - description: user new password
-        in: body
-        name: credentials
-        required: true
-        schema:
-          $ref: '#/definitions/user.UpdatePasswordDto'
-      produces:
-      - application/json
-      responses:
-        "200": {}
-        "400": {}
-        "401": {}
-      security:
-      - Bearer: []
-      summary: Update Password
       tags:
       - User
 securityDefinitions:

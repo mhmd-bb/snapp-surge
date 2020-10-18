@@ -15,7 +15,7 @@ func (sr *UsersRouter) SetupRouter(r *gin.Engine) *gin.Engine {
     {
         surge.POST("register", auth.AuthorizeJWT(), sr.usersController.CreateUser)
         surge.POST("login", sr.usersController.Login)
-        surge.PATCH("update/password", auth.AuthorizeJWT(), sr.usersController.UpdatePassword)
+        surge.PATCH("password", auth.AuthorizeJWT(), sr.usersController.UpdatePassword)
 
     }
 
