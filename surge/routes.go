@@ -18,9 +18,9 @@ func (sr *SurgeRouter) SetupRouter(r *gin.Engine) *gin.Engine {
 
     rule := r.Group("/rules", auth.AuthorizeJWT())
     {
-        rule.GET("get/all", BadRequestErrorMiddleware(), sr.surgeController.GetAllRules)
-        rule.POST("create", BadRequestErrorMiddleware(), sr.surgeController.CreateRule)
-        rule.DELETE("delete", BadRequestErrorMiddleware(), sr.surgeController.DeleteRuleById)
+        rule.GET("", BadRequestErrorMiddleware(), sr.surgeController.GetAllRules)
+        rule.POST("", BadRequestErrorMiddleware(), sr.surgeController.CreateRule)
+        rule.DELETE(":id", BadRequestErrorMiddleware(), sr.surgeController.DeleteRuleById)
     }
 
     return r

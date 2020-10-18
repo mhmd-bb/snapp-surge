@@ -14,7 +14,7 @@ Increase price as demand increases.
 * [Go](https://golang.org/) -  an open source programming language that makes it easy to build simple, reliable, and efficient software.
 * [Gin](https://github.com/gin-gonic/gin) - a web framework written in Go (Golang).
 * [Gorm](https://gorm.io/) - The fantastic ORM library for Golang.
-* [OpenStreetMap](openstreetmap.org/) - OpenStreetMap is the free wiki world map.
+* [OpenStreetMap](https://openstreetmap.org/) - OpenStreetMap is the free wiki world map.
 * [PostgreSQL](https://www.postgresql.org/) - PostgreSQL is a powerful, open source object-relational database system.
 * [PostGIS](https://postgis.net/) - PostGIS is a spatial database extender for PostgreSQL.
 * [Docker](https://www.docker.com/) - for containerization.
@@ -42,6 +42,47 @@ If you have timeout problem while downloading project dependencies use a VPN. (S
 * After all services are up and running you can open **http://localhost:8080/docs/index.html** to see Swagger documentation.
 * A Default user is created for you on application startup (you can change the user pass in .env file) so you can login.
 * Don't forget to create rules (threshold, coefficient pairs).
+
+You can easily use the Swagger Documentation; But I'm providing some curl commands as well:
+
+### User
+Login:
+```sh
+$ curl -X POST "http://localhost:8080/users/login" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"password\": \"admin\",  \"username\": \"admin\"}"
+```
+
+Update Password:
+```sh
+$ curl -X PATCH "http://localhost:8080/users/password" -H  "accept: application/json" -H  "Authorization: Bearer {Your Token}" -H  "Content-Type: application/json" -d "{  \"password\": \"admin\"}"
+```
+
+Create New User:
+```sh
+$ curl -X POST "http://localhost:8080/users/register" -H  "accept: application/json" -H  "Authorization: Bearer {Your Token}" -H  "Content-Type: application/json" -d "{  \"password\": \"mohammad\",  \"username\": \"mohamamd\"}"
+```
+
+### Rule
+
+Get All Rules:
+```sh
+$ curl -X GET "http://localhost:8080/rules" -H  "accept: application/json" -H  "Authorization: Bearer {Your Token}"
+```
+
+Create New Rule:
+```sh
+$ curl -X POST "http://localhost:8080/rules" -H  "accept: application/json" -H  "Authorization: Bearer {Your Token}" -H  "Content-Type: application/json" -d "{  \"coefficient\": 1.1,  \"threshold\": 10}"
+```
+
+Delete Rule:
+```sh
+$ curl -X DELETE "http://localhost:8080/rules/1" -H  "accept: application/json" -H  "Authorization: Bearer {Your Token}"
+```
+
+### And most importantly:
+Ride Request which returns coefficient and increases district request counter:
+```sh
+$ curl -X POST "http://localhost:8080/surge/ride" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"lat\": 51.13199462890625,  \"lon\": 35.73425097869431}"
+```
 
 
 

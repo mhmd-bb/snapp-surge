@@ -10,7 +10,3 @@ type RuleDto struct {
     Threshold uint64   `json:"threshold" binding:"required" example:"12"`
     Coefficient float32   `json:"coefficient" binding:"required" example:"1.12"`
 }
-
-type DeleteRuleDto struct {
-    Id  uint64  `json:"id"  binding:"required"`
-}
