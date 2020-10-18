@@ -10,13 +10,14 @@ import (
 var DB *gorm.DB
 
 // Opening a database and save the reference to `Database` struct.
-func InitDB(user string, pass string, database string, logger *log.Logger) *gorm.DB {
+func InitDB(host string, user string, pass string, database string, logger *log.Logger) *gorm.DB {
 
 	var dsn = fmt.Sprintf(
-		"user=%s password=%s database=%s host=localhost port=5432 sslmode=disable",
+		"user=%s password=%s database=%s host=%s port=5432 sslmode=disable",
 		user,
 		pass,
-		database)
+		database,
+		host)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

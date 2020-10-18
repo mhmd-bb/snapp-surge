@@ -62,7 +62,7 @@ func main() {
 	config.InitConstants(loggerInstance)
 
 	// connect to database
-	db := database.InitDB(config.Consts.PostgresUser, config.Consts.PostgresPass, config.Consts.PostgresDB, loggerInstance)
+	db := database.InitDB(config.Consts.PostgresHost, config.Consts.PostgresUser, config.Consts.PostgresPass, config.Consts.PostgresDB, loggerInstance)
 
 	// migrate all models
 	Migrate(db, loggerInstance)
