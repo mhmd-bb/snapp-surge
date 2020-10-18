@@ -16,6 +16,19 @@ services:
     volumes:
       - ./osm-export:/osm-export
 
+  web:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    env_file:
+      - ./.env
+    depends_on:
+      - postgres
+    restart: on-failure
+    command: ./app
+    ports:
+    - "8080:8080"
+
   postgres:
     image: "postgis/postgis"
 
