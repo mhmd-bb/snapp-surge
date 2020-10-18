@@ -3,6 +3,7 @@ package surge
 import (
     "errors"
     "github.com/mhmd-bb/snapp-surge/osm"
+    log "github.com/sirupsen/logrus"
     "gorm.io/gorm"
     "time"
 )
@@ -56,6 +57,8 @@ type SurgeService struct {
     // Window Length is configurable as well default value is 2 hours
     // It is a moving window on buckets
     windowLength uint64
+
+    logger *log.Logger
 }
 
 // 1.Get last bucket that hasn't expired yet and increment it's counter by one
@@ -79,6 +82,13 @@ func (s *SurgeService) IncrementLastActiveBucket(bucket *Bucket, district uint8)
 // Get bucket by reference and increment its counter by one
 func (s *SurgeService) IncrementBucketCounter(bucket *Bucket) (err error) {
     err = s.DB.Model(bucket).Update("counter", bucket.Counter+1).Error
+
+    if err != nil {
+        s.logger.WithFields(log.Fields{"bucket": *bucket}).Error("incrementing bucket counter failed")
+    }
+
+    s.logger.WithFields(log.Fields{"bucketID": bucket.ID}).Trace("Bucket counter incremented successfully")
+
     return err
 }
 
@@ -86,6 +96,11 @@ func (s *SurgeService) IncrementBucketCounter(bucket *Bucket) (err error) {
 func (s *SurgeService) GetLastActiveBucketByDistrict(bucket *Bucket, district uint8) (err error) {
 
     err = s.DB.First(&bucket, "exp_date > ? AND district_id = ?", time.Now(), district).Error
+
+    if err != nil {
+        s.logger.WithFields(log.Fields{"districtID": district}).Info("no active bucket found")
+    }
+
     return err
 }
 
@@ -95,6 +110,12 @@ func (s *SurgeService) CreateBucket(bucket *Bucket, district uint8) (err error) 
     *bucket = Bucket{DistrictID: district, BucketLength: s.bucketLength}
 
     err = s.DB.Create(bucket).Error
+
+    if err != nil {
+        s.logger.WithFields(log.Fields{"districtID": district}).Error("bucket creation failed")
+    }
+
+    s.logger.WithFields(log.Fields{"districtID": district}).Info("bucket created successfully")
 
     return err
 }
@@ -136,6 +157,11 @@ func (s *SurgeService) CreateRule(rule *Rule, dto RuleDto) (err error){
 
     err = s.DB.Create(rule).Error
 
+    if err != nil {
+        s.logger.WithFields(log.Fields{"rule": dto}).Error("rule creation failed")
+    }
+    s.logger.WithFields(log.Fields{"rule": *rule}).Info("rule created successfully")
+
     return err
 }
 
@@ -151,10 +177,15 @@ func (s *SurgeService) DeleteRuleById(id uint64) (err error){
 
     err = s.DB.Delete(&Rule{ID: id}).Error
 
+    if err != nil {
+        s.logger.WithFields(log.Fields{"ruleID": id}).Error("rule deletion failed")
+    }
+    s.logger.WithFields(log.Fields{"ruleID": id}).Info("rule deleted successfully")
+
     return err
 }
 
-func NewSurgeService(db *gorm.DB, osmService *osm.OpenStreetMapService, bucketLength uint64, windowLength uint64) *SurgeService {
+func NewSurgeService(db *gorm.DB, osmService *osm.OpenStreetMapService, bucketLength uint64, windowLength uint64, logger *log.Logger) *SurgeService {
 
-    return &SurgeService{DB: db, OsmService: osmService, bucketLength: bucketLength, windowLength: windowLength}
+    return &SurgeService{DB: db, OsmService: osmService, bucketLength: bucketLength, windowLength: windowLength, logger: logger}
 }

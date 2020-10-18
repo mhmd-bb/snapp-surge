@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -9,7 +10,7 @@ import (
 var DB *gorm.DB
 
 // Opening a database and save the reference to `Database` struct.
-func InitDB(user string, pass string, database string) *gorm.DB {
+func InitDB(user string, pass string, database string, logger *log.Logger) *gorm.DB {
 
 	var dsn = fmt.Sprintf(
 		"user=%s password=%s database=%s host=localhost port=5432 sslmode=disable",
@@ -19,9 +20,9 @@ func InitDB(user string, pass string, database string) *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Println("database err: ", err)
+		logger.WithField("error", err).Fatal("database connection failed")
 	}
-	fmt.Println("connected to database successfully.")
+	logger.Info("connected to database successfully.")
 	DB = db
 	return DB
 }

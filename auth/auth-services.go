@@ -3,6 +3,7 @@ package auth
 import (
     "fmt"
     "github.com/dgrijalva/jwt-go"
+    log "github.com/sirupsen/logrus"
     "time"
 )
 
@@ -19,6 +20,7 @@ type tokenBody struct {
 type JwtService struct {
     secretKey string
     tokenExpiration uint64
+    logger  *log.Logger
 }
 
 func (service *JwtService) GenerateJwtToken(username string) string {
@@ -34,7 +36,7 @@ func (service *JwtService) GenerateJwtToken(username string) string {
     //encoded string
     t, err := token.SignedString([]byte(service.secretKey))
     if err != nil {
-        panic(err)
+        service.logger.WithField("error", err).Error("token encoding failed")
     }
     return t
 }
@@ -50,6 +52,6 @@ func (service *JwtService) ValidateJwtToken(encodedToken string) (*jwt.Token, er
     })
 }
 
-func NewJwtService(secret string, tokenExpiration uint64) *JwtService {
-    return &JwtService{secretKey: secret, tokenExpiration: tokenExpiration}
+func NewJwtService(secret string, tokenExpiration uint64, logger  *log.Logger) *JwtService {
+    return &JwtService{secretKey: secret, tokenExpiration: tokenExpiration, logger: logger}
 }
