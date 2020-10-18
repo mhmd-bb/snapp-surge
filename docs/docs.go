@@ -24,7 +24,29 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/rules/create": {
+        "/rules": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get All Rules",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rule"
+                ],
+                "summary": "Get All Rules",
+                "responses": {
+                    "200": {},
+                    "401": {}
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -59,7 +81,7 @@ var doc = `{
                 }
             }
         },
-        "/rules/delete": {
+        "/rules/{id}": {
             "delete": {
                 "security": [
                     {
@@ -79,42 +101,16 @@ var doc = `{
                 "summary": "Delete Rule",
                 "parameters": [
                     {
+                        "type": "integer",
                         "description": "Rule ID",
-                        "name": "ID",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/surge.DeleteRuleDto"
-                        }
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {},
                     "400": {},
-                    "401": {}
-                }
-            }
-        },
-        "/rules/get/all": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Get All Rules",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Rule"
-                ],
-                "summary": "Get All Rules",
-                "responses": {
-                    "200": {},
                     "401": {}
                 }
             }
@@ -180,6 +176,42 @@ var doc = `{
                 }
             }
         },
+        "/users/password": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Change your password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update Password",
+                "parameters": [
+                    {
+                        "description": "user new password",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdatePasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {},
+                    "401": {}
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "security": [
@@ -215,56 +247,9 @@ var doc = `{
                     "401": {}
                 }
             }
-        },
-        "/users/update/password": {
-            "patch": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Change your password",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Update Password",
-                "parameters": [
-                    {
-                        "description": "user new password",
-                        "name": "credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.UpdatePasswordDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {},
-                    "400": {},
-                    "401": {}
-                }
-            }
         }
     },
     "definitions": {
-        "surge.DeleteRuleDto": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
         "surge.LatLonDto": {
             "type": "object",
             "required": [

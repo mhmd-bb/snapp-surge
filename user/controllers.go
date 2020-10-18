@@ -86,7 +86,7 @@ func (uc *UsersController)CreateUser(c *gin.Context) {
 // @Failure 400
 // @Failure 401
 // @Security Bearer
-// @Router /users/update/password [patch]
+// @Router /users/password [patch]
 func (uc *UsersController)UpdatePassword(c *gin.Context) {
 
     var passwordDto UpdatePasswordDto

@@ -4,6 +4,7 @@ import (
     "github.com/gin-gonic/gin"
     "github.com/go-playground/validator"
     "net/http"
+    "strconv"
 )
 
 type SurgeController struct {
@@ -87,7 +88,7 @@ func (sc *SurgeController)Ride(c *gin.Context) {
 // @Success 200
 // @Failure 401
 // @Security Bearer
-// @Router /rules/get/all [get]
+// @Router /rules [get]
 func (sc *SurgeController)GetAllRules(c *gin.Context) {
     rules, err := sc.surgeService.GetAllRules()
 
@@ -110,7 +111,7 @@ func (sc *SurgeController)GetAllRules(c *gin.Context) {
 // @Success 201
 // @Failure 401
 // @Security Bearer
-// @Router /rules/create [post]
+// @Router /rules [post]
 func (sc *SurgeController)CreateRule(c *gin.Context) {
 
     var ruleDto RuleDto
@@ -140,23 +141,23 @@ func (sc *SurgeController)CreateRule(c *gin.Context) {
 // @Tags Rule
 // @Accept  json
 // @Produce  json
-// @Param Rule ID body DeleteRuleDto true "Rule ID"
+// @Param id path int true "Rule ID"
 // @Success 200
 // @Failure 400
 // @Failure 401
 // @Security Bearer
-// @Router /rules/delete [delete]
+// @Router /rules/{id} [delete]
 func (sc *SurgeController)DeleteRuleById(c *gin.Context) {
 
-    var deleteRuleDto DeleteRuleDto
+    id := c.Params.ByName("id")
+    ruleId, err := strconv.ParseUint(id, 0, 64)
 
-    err := c.BindJSON(&deleteRuleDto)
     if err != nil {
         _ = c.Error(err)
         return
     }
 
-    err = sc.surgeService.DeleteRuleById(deleteRuleDto.Id)
+    err = sc.surgeService.DeleteRuleById(ruleId)
     if err != nil {
         _ = c.Error(err)
         return
