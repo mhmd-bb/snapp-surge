@@ -48,7 +48,7 @@ func (sc *SurgeController) Ride(c *gin.Context) {
 	var districtID uint8
 	err = sc.surgeService.GetDistrictIDFromLocation(&districtID, latLonDto.Lat, latLonDto.Lon)
 	if districtID == 0 {
-		c.JSON(http.StatusOK, gin.H{"error": "Latitude and Longitude is not in supported region"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Latitude and Longitude is not in supported region"})
 		return
 	}
 
@@ -56,7 +56,7 @@ func (sc *SurgeController) Ride(c *gin.Context) {
 	var lastActiveBucket Bucket
 	err = sc.surgeService.IncrementLastActiveBucket(&lastActiveBucket, districtID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -64,7 +64,7 @@ func (sc *SurgeController) Ride(c *gin.Context) {
 	var requestsCountInWindow uint64
 	err = sc.surgeService.SumAllBucketsInCurrentWindow(&requestsCountInWindow, districtID)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -72,7 +72,7 @@ func (sc *SurgeController) Ride(c *gin.Context) {
 	var coefficient float32
 	err = sc.surgeService.CalculateCoefficient(&coefficient, requestsCountInWindow)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
