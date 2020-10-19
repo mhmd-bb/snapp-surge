@@ -33,7 +33,9 @@ func Migrate(db *gorm.DB, loggerInstance *log.Logger) {
 		loggerInstance.Error("User migration failed")
 	}
 
-	loggerInstance.Info("Migrations were successful")
+	if err == nil {
+		loggerInstance.Info("Migrations were successful")
+	}
 }
 
 func JSONMiddleware() gin.HandlerFunc {
